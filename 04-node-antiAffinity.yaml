@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: Pod
+metadata: 
+  name: nginx-antiAffinity-pod
+  labels:
+    env: test
+spec:
+  affinity:
+    nodeaffintiy:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: topology.kubernetes.io/zone
+            operator: NotIn
+            values:
+            - us-east-1a
+            - us-east-1b
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 10
+        preference:
+          matchExpressions:
+          - key: project
+            operator: NotIn
+            values:
+            - roboshop
+      - weight: 5
+        preference:
+          matchExpressions:
+          - key: project
+            operator: NotIn
+            values:
+            - roboshop-test
+      containers:
+      - name: nginx
+        image: nginx
+      tolerations:
+      - key: "project"
+        operator: "Equal"
+        value: "roboshop"
+        effect: "NoExecute"
+#Node anti-affinity is the opposite of node affinity. It is used to specify the nodes on which the pod should not be scheduled.
+#In this example we have used node anti-affinity to schedule the pod on nodes which are not in the zone us-east-1a or us-east-1b and also do not have the label project=roboshop or project=roboshop-test.
+#The requiredDuringSchedulingIgnoredDuringExecution field is used to specify the hard requirement for scheduling the pod. 
+#In this example we have specified that the pod cannot be scheduled on nodes which are in the zone us-east-1a or us-east-1b.
+#The preferredDuringSchedulingIgnoredDuringExecution field is used to specify the soft requirement for scheduling the pod
+#In this example we have specified that the pod should not be scheduled on nodes which have the label project=roboshop with a weight of 10 and on nodes which have the label project=roboshop-test with a weight of 5.
+#The scheduler will try to schedule the pod on nodes which do not have the label project=roboshop with a weight of 10 first and 
+#if it cannot find any node without that label then it will try to schedule the pod on nodes which do not have the label project=roboshop-test with a weight of 5.  
