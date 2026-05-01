@@ -1,0 +1,13 @@
+#selectors -> how you control the pod scheduling. Scheduler in Master node
+apiVersion: v1
+kind: Pod
+metadata:
+  name:nginx-pod
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+  nodeSelector:
+    project: roboshop # We can assign the label to node  using kubectl label nodes <node-name> project=roboshop
+    #This will schedule the pod only on the node which has the label project=roboshop.If there is no node with this label then the pod will be in pending state
+    
