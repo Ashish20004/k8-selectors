@@ -15,3 +15,9 @@ spec:
     operator: "Equal"
     value: "roboshop"
     effect: "NoExecute"
+
+#we can taint the node using  kubectl taint nodes <node-name> project=Roboshop:NoExecute
+#This will taint the node with the key project and value roboshop and effect NoExecute. 
+#This means that no pod will be scheduled on this node unless the pod has a toleration
+#In this example we have added a toleration to the pod which allows it to be scheduled on the node with the taint project=roboshop:NoExecute.
+#we can untaint the node using kubectl taint nodes <node-name> project- which will remove the taint from the node.
