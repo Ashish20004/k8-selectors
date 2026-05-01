@@ -33,4 +33,12 @@ spec:
       containers:
       - name: nginx
         image: nginx
-        
+
+#Node affinity is a more expressive way to control the scheduling of pods on nodes.
+#In this example we have used node affinity to schedule the pod on nodes which are in the zone us-east-1a or us-east-1b and also have the label project=roboshop or project=roboshop-test.
+#The requiredDuringSchedulingIgnoredDuringExecution field is used to specify the hard requirement for scheduling the pod. 
+#In this example we have specified that the pod can only be scheduled on nodes which are in the zone us-east-1a or us-east-1b.
+#The preferredDuringSchedulingIgnoredDuringExecution field is used to specify the soft requirement for scheduling the pod
+#In this example we have specified that the pod should be scheduled on nodes which have the label project=roboshop with a weight of 10 and on nodes which have the label project=roboshop-test with a weight of 5.
+#The scheduler will try to schedule the pod on nodes which have the label project=roboshop with a weight of 10 first and 
+#if it cannot find any node with that label then it will try to schedule the pod on nodes which have the label project=roboshop-test with a weight of 5.
