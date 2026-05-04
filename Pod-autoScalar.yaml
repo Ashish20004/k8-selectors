@@ -1,0 +1,55 @@
+apiVersion: v1
+kind: Deployment
+metadata:
+  name: pod-autoscalar
+  labels:
+    name: roboshop
+    environment: dev
+    component: backend
+spec:
+  minreplicas: 2
+  maxreplicas: 6
+  selector:
+    matchLabels:
+      name: roboshop
+      environment: dev
+      component: backend
+  template:
+    meatadata:
+      labels:
+        name: roboshop
+        environment: dev
+        component: backend
+    spec:
+      containers:
+      - name: catalogue
+        image: joindevops/catalogue:1.2.0
+      resources:
+        requests:
+          cpu: 100m
+          memory: 128mi
+        limits:
+          cpu: 150m
+          memory: 256mi
+        volumesmounts:
+          - name: volume1
+            path: /var/log/catalogue
+---
+apiversion: v1
+kind: Service
+metadata:
+  name: catalogue
+  labels:
+    name: roboshop
+    environment: dev
+    component: backend
+spec:
+  selector:
+    name: roboshop
+    environment: dev
+    component: backend
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+      
